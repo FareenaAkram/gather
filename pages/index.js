@@ -20,11 +20,6 @@ const DUMMY_MEETUPS = [
   },
 ];
 export default function Home(props) {
-  const [loadedMeetups, setLoadedMeetups] = useState([]);
-
-  useEffect(() => {
-    setLoadedMeetups(DUMMY_MEETUPS), []
-  })
 
   return (
     <MeetupList meetups={props.meetups}></MeetupList>
@@ -33,13 +28,21 @@ export default function Home(props) {
   )
 }
 export async function getServerSideProps(context) {
-  const req = context.req;
-  const res = context.res;
+
+  const response = await fetch('http://localhost:3000/api/new-meetup', {
+    method: 'GET', 
+    headers: {
+        'Content-Type': 'application/json'
+    }
+  });
+  
+  const data = await response.json();
+  
 
   // fetch data from an API
   return {
     props: {
-      meetups: DUMMY_MEETUPS
+      meetups: data.meetups
     }
   }
 }
