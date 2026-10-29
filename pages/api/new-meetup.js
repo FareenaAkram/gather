@@ -1,7 +1,8 @@
 
 import { MongoClient } from "mongodb";
 export default async function handler(req, res) {
-const client = new MongoClient("mongodb+srv://fareenaakram18_db_user:lYGN84yrFvbfZp0B@cluster0.nmegg5c.mongodb.net/?compressors=zlib");
+  const password = process.env.DB_PASSWORD;
+const client = new MongoClient(`mongodb+srv://fareenaakram18_db_user:${password}@cluster0.nmegg5c.mongodb.net/?compressors=zlib`);
   if (req.method === 'POST') {
     const data = req.body;
     
@@ -25,7 +26,7 @@ const client = new MongoClient("mongodb+srv://fareenaakram18_db_user:lYGN84yrFvb
   }
    else if (req.method === 'GET') {
   
-    // const client = new MongoClient("mongodb+srv://fareenaakram18_db_user:lYGN84yrFvbfZp0B@cluster0.nmegg5c.mongodb.net/?compressors=zlib");
+
     try {
       await client.connect();
       console.log("You successfully connected to MongoDB!");
