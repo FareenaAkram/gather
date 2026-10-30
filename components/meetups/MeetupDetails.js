@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import HostActions from './HostActions';
 import { getCategory } from '../../lib/categories';
 import { formatLongDate, googleCalendarUrl } from '../../lib/dates';
 import classes from './MeetupDetails.module.css';
@@ -36,6 +37,8 @@ export default function MeetupDetails(props) {
             </p>
           </div>
         )}
+
+        <HostActions meetupId={props.id} host={props.host} />
 
         <div className={classes.info}>
           <div className={classes.tile}>

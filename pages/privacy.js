@@ -36,8 +36,9 @@ export default function PrivacyPage() {
 
       <h2>Where it’s stored</h2>
       <p>
-        Data is stored in a MongoDB Atlas database, and the site is hosted on Vercel. We don’t
-        sell or share your information with anyone else.
+        Data is stored in a MongoDB Atlas database, and the site is hosted on Vercel. Photos you
+        upload for a meetup are stored with Vercel Blob and are publicly visible, like the rest
+        of the meetup. We don’t sell or share your information with anyone else.
       </p>
 
       <h2>Deleting your data</h2>

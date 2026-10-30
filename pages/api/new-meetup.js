@@ -1,6 +1,11 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './auth/[...nextauth]';
-import { createMeetup, getAllMeetups, validateMeetup } from '../../lib/meetups';
+import {
+  cleanMeetupInput,
+  createMeetup,
+  getAllMeetups,
+  validateMeetup,
+} from '../../lib/meetups';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -16,17 +21,9 @@ export default async function handler(req, res) {
       return res.status(422).json({ message: error });
     }
 
-    const { title, image, address, description, date, category, capacity } = req.body;
-
     try {
       const id = await createMeetup({
-        title: title.trim(),
-        image: image.trim(),
-        address: address.trim(),
-        description: description.trim(),
-        date,
-        category,
-        capacity: capacity ? Number(capacity) : null,
+        ...cleanMeetupInput(req.body),
         host: {
           email: session.user.email,
           name: session.user.name || session.user.email.split('@')[0],

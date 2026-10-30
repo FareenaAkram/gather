@@ -1,12 +1,18 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import Card from '../ui/Card';
+import ImagePicker from './ImagePicker';
 import { CATEGORIES } from '../../lib/categories';
 import classes from './NewMeetupForm.module.css';
 
+// Used for both creating and editing. When editing, props.meetup fills in the fields.
 function NewMeetupForm(props) {
+  const meetup = props.meetup || {};
   const titleInputRef = useRef();
-  const imageInputRef = useRef();
+  // the image is state, not a ref: ImagePicker sets it once an upload finishes
+  const [image, setImage] = useState(meetup.image || '');
+  const [isUploading, setIsUploading] = useState(false);
+  const [imageError, setImageError] = useState(null);
   const dateInputRef = useRef();
   const categoryInputRef = useRef();
   const addressInputRef = useRef();
@@ -16,8 +22,12 @@ function NewMeetupForm(props) {
   function submitHandler(event) {
     event.preventDefault();
 
+    if (!image) {
+      setImageError('Please add a photo for your meetup.');
+      return;
+    }
+
     const enteredTitle = titleInputRef.current.value;
-    const enteredImage = imageInputRef.current.value;
     const enteredDate = dateInputRef.current.value;
     const enteredCategory = categoryInputRef.current.value;
     const enteredAddress = addressInputRef.current.value;
@@ -26,7 +36,7 @@ function NewMeetupForm(props) {
 
     const meetupData = {
       title: enteredTitle,
-      image: enteredImage,
+      image: image,
       date: enteredDate,
       category: enteredCategory,
       address: enteredAddress,
@@ -47,6 +57,7 @@ function NewMeetupForm(props) {
             required
             maxLength={120}
             id='title'
+            defaultValue={meetup.title}
             ref={titleInputRef}
             placeholder='e.g. Sunday Sketch Club'
           />
@@ -54,11 +65,17 @@ function NewMeetupForm(props) {
         <div className={classes.row}>
           <div className={classes.control}>
             <label htmlFor='date'>Date &amp; Time</label>
-            <input type='datetime-local' required id='date' ref={dateInputRef} />
+            <input
+              type='datetime-local'
+              required
+              id='date'
+              defaultValue={meetup.date || ''}
+              ref={dateInputRef}
+            />
           </div>
           <div className={classes.control}>
             <label htmlFor='category'>Category</label>
-            <select id='category' required defaultValue='' ref={categoryInputRef}>
+            <select id='category' required defaultValue={meetup.category || ''} ref={categoryInputRef}>
               <option value='' disabled>
                 Choose one…
               </option>
@@ -72,13 +89,20 @@ function NewMeetupForm(props) {
         </div>
         <div className={classes.control}>
           <label htmlFor='image'>Meetup Image</label>
-          <input
-            type='url'
-            required
+          <ImagePicker
             id='image'
-            ref={imageInputRef}
-            placeholder='https://…'
+            value={meetup.image}
+            onChange={(url) => {
+              setImage(url);
+              setImageError(null);
+            }}
+            onUploadingChange={setIsUploading}
           />
+          {imageError && (
+            <p className={classes.fieldError} role='alert'>
+              {imageError}
+            </p>
+          )}
         </div>
         <div className={classes.row}>
           <div className={classes.control}>
@@ -87,6 +111,7 @@ function NewMeetupForm(props) {
               type='text'
               required
               id='address'
+              defaultValue={meetup.address}
               ref={addressInputRef}
               placeholder='Street, City'
             />
@@ -101,6 +126,7 @@ function NewMeetupForm(props) {
               max='10000'
               step='1'
               id='capacity'
+              defaultValue={meetup.capacity || ''}
               ref={capacityInputRef}
               placeholder='e.g. 30'
             />
@@ -110,6 +136,7 @@ function NewMeetupForm(props) {
           <label htmlFor='description'>Description</label>
           <textarea
             id='description'
+            defaultValue={meetup.description}
             required
             rows='5'
             placeholder='What should people expect?'
@@ -122,8 +149,12 @@ function NewMeetupForm(props) {
           </p>
         )}
         <div className={classes.actions}>
-          <button disabled={props.isSubmitting}>
-            {props.isSubmitting ? 'Publishing…' : 'Add Meetup'}
+          <button disabled={props.isSubmitting || isUploading}>
+            {isUploading
+              ? 'Waiting for photo…'
+              : props.isSubmitting
+              ? props.pendingLabel || 'Publishing…'
+              : props.submitLabel || 'Add Meetup'}
           </button>
         </div>
       </form>
