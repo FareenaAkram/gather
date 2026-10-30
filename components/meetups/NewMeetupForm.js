@@ -113,6 +113,7 @@ function NewMeetupForm(props) {
             id='address'
             defaultValue={meetup.address}
             defaultLocation={props.location}
+            near={props.near}
             image={image}
             onChange={(newAddress, newLocation) => {
               setAddress(newAddress);

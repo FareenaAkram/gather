@@ -5,6 +5,7 @@ import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { getMeetupById, getMeetupLocation } from "../../lib/meetups";
 import { userIdFromEmail } from "../../lib/users";
+import { approximateLocation } from "../../lib/geocode";
 import classes from "../../styles/NewMeetup.module.css";
 
 export default function EditMeetup(props) {
@@ -30,7 +31,9 @@ export default function EditMeetup(props) {
                 throw new Error(data.message || 'Something went wrong.');
             }
 
-            router.push('/' + props.meetup._id);
+            // The browser keeps a copy of meetup pages it has already shown. Skip it, or
+            // we'd land on the old version (old address, old map) instead of the new one.
+            router.push('/' + props.meetup._id, undefined, { unstable_skipClientCache: true });
         } catch (err) {
             setError(err.message);
             setIsSubmitting(false);
@@ -56,6 +59,7 @@ export default function EditMeetup(props) {
             <NewMeetupForm
                 meetup={props.meetup}
                 location={props.location}
+                near={props.near}
                 onAddMeetup={updateMeetupHandler}
                 isSubmitting={isSubmitting}
                 error={error}
@@ -88,5 +92,8 @@ export async function getServerSideProps(context) {
 
     const location = await getMeetupLocation(meetupId);
 
-    return { props: { meetup, location } };
+    // suggest places near the meetup's current spot, or near the host if it has none
+    const near = location || approximateLocation(context.req);
+
+    return { props: { meetup, location, near } };
 }

@@ -4,13 +4,43 @@ import classes from './AddressInput.module.css';
 
 // Photon is a free OpenStreetMap search built for search-as-you-type
 // (Nominatim, which we use on the server, doesn't allow that).
-const PHOTON_URL = 'https://photon.komoot.io/api/?limit=5&q=';
+// lang=en: English names, otherwise you get local scripts (e.g. Urdu in Pakistan).
+// lat/lon: places near that point come first, but others still show up.
+function searchUrl(text, near) {
+  let url = 'https://photon.komoot.io/api/?limit=8&lang=en&q=' + encodeURIComponent(text);
+  if (near) {
+    url += `&lat=${near.lat}&lon=${near.lng}&location_bias_scale=0.3`;
+  }
+  return url;
+}
 
-// "Café Luna, 12 Main Street, Berlin, Germany" from Photon's pieces
+// "Liberty Market, Noor Jahan Road, Gulberg, Lahore, Punjab, Pakistan" from Photon's pieces
 function placeLabel(properties) {
   const street = [properties.street, properties.housenumber].filter(Boolean).join(' ');
-  const parts = [properties.name, street, properties.city, properties.country];
+  const parts = [
+    properties.name,
+    street,
+    properties.district,
+    properties.city || properties.county,
+    properties.state,
+    properties.country,
+  ];
   return parts.filter((part, index) => part && parts.indexOf(part) === index).join(', ');
+}
+
+// Photon often returns the same place several times (e.g. a market as a street and
+// as an area). Keep the first of each label, up to 5.
+function uniqueByLabel(places) {
+  const seen = new Set();
+  return places
+    .filter((place) => {
+      if (seen.has(place.label)) {
+        return false;
+      }
+      seen.add(place.label);
+      return true;
+    })
+    .slice(0, 5);
 }
 
 // Address field with place suggestions and a map preview. Typing freely still works;
@@ -22,6 +52,7 @@ function AddressInput(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [location, setLocation] = useState(props.defaultLocation || null);
   const skipNextSearch = useRef(false);
+  const isFocused = useRef(false);
 
   // Search 350ms after the person stops typing, not on every key press, and ignore
   // answers that arrive after they've already typed something newer.
@@ -38,18 +69,21 @@ function AddressInput(props) {
     let ignore = false;
     const timer = setTimeout(async () => {
       try {
-        const response = await fetch(PHOTON_URL + encodeURIComponent(text));
+        const response = await fetch(searchUrl(text, props.near));
         const data = await response.json();
         if (!ignore) {
           setSuggestions(
-            data.features.map((feature) => ({
-              label: placeLabel(feature.properties),
-              lat: feature.geometry.coordinates[1],
-              lng: feature.geometry.coordinates[0],
-            }))
+            uniqueByLabel(
+              data.features.map((feature) => ({
+                label: placeLabel(feature.properties),
+                lat: feature.geometry.coordinates[1],
+                lng: feature.geometry.coordinates[0],
+              }))
+            )
           );
           setActiveIndex(-1);
-          setIsOpen(true);
+          // only pop the list open if they're still in the field
+          setIsOpen(isFocused.current);
         }
       } catch (err) {
         // suggestions are a bonus; if the search fails, plain typing still works
@@ -60,7 +94,7 @@ function AddressInput(props) {
       ignore = true;
       clearTimeout(timer);
     };
-  }, [text]);
+  }, [text, props.near]);
 
   function changeHandler(event) {
     setText(event.target.value);
@@ -105,8 +139,14 @@ function AddressInput(props) {
         value={text}
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
-        onFocus={() => suggestions.length > 0 && setIsOpen(true)}
-        onBlur={() => setIsOpen(false)}
+        onFocus={() => {
+          isFocused.current = true;
+          setIsOpen(suggestions.length > 0);
+        }}
+        onBlur={() => {
+          isFocused.current = false;
+          setIsOpen(false);
+        }}
         placeholder='Search for a place or address'
         autoComplete='off'
         role='combobox'

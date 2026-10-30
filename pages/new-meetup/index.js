@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth/next";
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 import { useRouter } from "next/router";
 import { authOptions } from "../api/auth/[...nextauth]";
+import { approximateLocation } from "../../lib/geocode";
 import classes from "../../styles/NewMeetup.module.css";
-export default function NewMeetup() {
+export default function NewMeetup(props) {
 
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,6 +49,7 @@ export default function NewMeetup() {
             </div>
             <NewMeetupForm
                 onAddMeetup={addMeetupHandler}
+                near={props.near}
                 isSubmitting={isSubmitting}
                 error={error}
             />
@@ -65,5 +67,6 @@ export async function getServerSideProps(context) {
         };
     }
 
-    return { props: {} };
+    // so the address search can suggest places near the host first
+    return { props: { near: approximateLocation(context.req) } };
 }

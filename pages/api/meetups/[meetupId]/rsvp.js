@@ -1,13 +1,27 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]';
-import { addAttendee, removeAttendee } from '../../../../lib/meetups';
+import { addAttendee, getMeetupById, removeAttendee } from '../../../../lib/meetups';
 
+// GET /api/meetups/:id/rsvp    → who's going right now (public)
 // POST /api/meetups/:id/rsvp   → "I'm going"
 // DELETE /api/meetups/:id/rsvp → "I can't go anymore"
 // Responds with the updated list of attendees so the page can update right away.
 export default async function handler(req, res) {
+  if (req.method === 'GET') {
+    try {
+      const meetup = await getMeetupById(req.query.meetupId);
+      if (!meetup) {
+        return res.status(404).json({ message: 'Meetup not found.' });
+      }
+      return res.status(200).json({ attendees: meetup.attendees });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Could not load attendees.' });
+    }
+  }
+
   if (req.method !== 'POST' && req.method !== 'DELETE') {
-    res.setHeader('Allow', ['POST', 'DELETE']);
+    res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
     return res.status(405).json({ message: `Method ${req.method} not allowed.` });
   }
 

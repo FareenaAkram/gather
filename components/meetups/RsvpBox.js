@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
@@ -14,6 +14,23 @@ function RsvpBox(props) {
   const [attendees, setAttendees] = useState(props.attendees || []);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  // The page may be a cached copy from earlier in this visit, so ask for the
+  // current list once it's on screen. Until then we show the cached one.
+  useEffect(() => {
+    let ignore = false;
+    fetch(`/api/meetups/${props.meetupId}/rsvp`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (data && !ignore) {
+          setAttendees(data.attendees);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      ignore = true;
+    };
+  }, [props.meetupId]);
 
   const userId = session && session.user.id;
   const isHost = Boolean(props.host && userId === props.host.id);
