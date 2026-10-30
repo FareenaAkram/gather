@@ -63,6 +63,31 @@
   margin-bottom: 1.75rem;
 }
 
+.host {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: -0.75rem 0 1.75rem;
+  color: var(--muted);
+}
+
+.host img,
+.host span {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--lilac);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.host strong {
+  color: var(--ink);
+}
+
 .info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));

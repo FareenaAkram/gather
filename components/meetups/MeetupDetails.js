@@ -24,6 +24,19 @@ export default function MeetupDetails(props) {
         )}
         <h1>{props.title}</h1>
 
+        {props.host && (
+          <div className={classes.host}>
+            {props.host.image ? (
+              <img src={props.host.image} alt='' />
+            ) : (
+              <span>{props.host.name[0].toUpperCase()}</span>
+            )}
+            <p>
+              Hosted by <strong>{props.host.name}</strong>
+            </p>
+          </div>
+        )}
+
         <div className={classes.info}>
           <div className={classes.tile}>
             <div className={classes.icon}>

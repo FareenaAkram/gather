@@ -1,0 +1,65 @@
+.page {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding-top: 1.5rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+}
+
+.page h1 {
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  margin: 1.1rem 0 0.75rem;
+}
+
+.lead {
+  font-size: 1.15rem;
+  color: var(--muted);
+}
+
+.page h2 {
+  font-size: 1.3rem;
+  margin: 2.25rem 0 0.6rem;
+}
+
+.page p,
+.page li {
+  color: #3d3842;
+}
+
+.page p + p {
+  margin-top: 0.75rem;
+}
+
+.page ul {
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.page a {
+  color: var(--accent-dark);
+  font-weight: 500;
+}
+
+.page .back {
+  display: inline-block;
+  margin-top: 3rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.page .back:hover {
+  color: var(--accent);
+}

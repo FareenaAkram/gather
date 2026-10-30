@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { getServerSession } from "next-auth/next";
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 import { useRouter } from "next/router";
+import { authOptions } from "../api/auth/[...nextauth]";
 import classes from "../../styles/NewMeetup.module.css";
 export default function NewMeetup() {
 
@@ -51,4 +53,17 @@ export default function NewMeetup() {
             />
         </section>
     )
+}
+
+// only signed-in people can host; everyone else is sent to the sign-in page first
+export async function getServerSideProps(context) {
+    const session = await getServerSession(context.req, context.res, authOptions);
+
+    if (!session) {
+        return {
+            redirect: { destination: '/signin?callbackUrl=/new-meetup', permanent: false },
+        };
+    }
+
+    return { props: {} };
 }

@@ -40,3 +40,13 @@
 .brand span {
   color: var(--accent);
 }
+
+.footerInner a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footerInner a:hover {
+  color: var(--accent);
+}

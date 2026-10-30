@@ -1,7 +1,16 @@
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './auth/[...nextauth]';
 import { createMeetup, getAllMeetups, validateMeetup } from '../../lib/meetups';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
+    // the page already redirects signed-out users, but the API must check too:
+    // anyone can send a request straight to this URL without using our form
+    const session = await getServerSession(req, res, authOptions);
+    if (!session) {
+      return res.status(401).json({ message: 'Please sign in to host a meetup.' });
+    }
+
     const error = validateMeetup(req.body);
     if (error) {
       return res.status(422).json({ message: error });
@@ -18,6 +27,11 @@ export default async function handler(req, res) {
         date,
         category,
         capacity: capacity ? Number(capacity) : null,
+        host: {
+          email: session.user.email,
+          name: session.user.name || session.user.email.split('@')[0],
+          image: session.user.image || null,
+        },
       });
       return res.status(201).json({ message: 'Meetup created!', id });
     } catch (err) {

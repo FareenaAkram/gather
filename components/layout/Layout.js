@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import MainNavigation from './MainNavigation';
 import RouteLoader from '../ui/RouteLoader';
 import classes from './Layout.module.css';
@@ -13,7 +14,12 @@ function Layout(props) {
           <span className={classes.brand}>
             gather<span>.</span>
           </span>
-          <p>Built with Next.js &amp; MongoDB</p>
+          <p>
+            Built with Next.js &amp; MongoDB ·{' '}
+            <Link href='/privacy'>
+              <a>Privacy</a>
+            </Link>
+          </p>
         </div>
       </footer>
     </div>

@@ -12,6 +12,7 @@ export default function MeetupDetailsPage(props) {
       date={props.meetupData.date}
       category={props.meetupData.category}
       capacity={props.meetupData.capacity}
+      host={props.meetupData.host}
     />
   );
 }
