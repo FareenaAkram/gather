@@ -2,6 +2,7 @@ import classes from './MainNavigation.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
+import NotificationBell from './NotificationBell';
 
 function MainNavigation() {
   const router = useRouter();
@@ -31,7 +32,9 @@ function MainNavigation() {
             <li>
               <Link href='/new-meetup'>
                 <a className={classes.cta}>
-                  <span aria-hidden='true'>+</span> Host a Meetup
+                  <span className={classes.plus} aria-hidden='true'>+</span>
+                  <span className={classes.long}>Host a Meetup</span>
+                  <span className={classes.short}>Host</span>
                 </a>
               </Link>
             </li>
@@ -42,6 +45,11 @@ function MainNavigation() {
                 <Link href='/signin'>
                   <a className={classes.signin}>Sign in</a>
                 </Link>
+              </li>
+            )}
+            {session && (
+              <li>
+                <NotificationBell />
               </li>
             )}
             {session && (

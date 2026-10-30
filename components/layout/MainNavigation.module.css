@@ -79,9 +79,13 @@
   transform: translateY(-1px);
 }
 
-.cta span {
+.plus {
   font-size: 1.15rem;
   line-height: 1;
+}
+
+.short {
+  display: none;
 }
 
 .signin {
@@ -143,6 +147,14 @@
 
   .cta {
     padding: 0.55rem 0.85rem;
+  }
+
+  .long {
+    display: none;
+  }
+
+  .short {
+    display: inline;
   }
 
   .user {

@@ -1,16 +1,18 @@
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
+import { authOptions } from '../../auth/[...nextauth]';
 import {
-  checkMeetupOwner,
   cleanMeetupInput,
   deleteMeetup,
+  findMeetupForHost,
   updateMeetup,
   validateMeetup,
-} from '../../../lib/meetups';
+} from '../../../../lib/meetups';
+import { notifyAttendees } from '../../../../lib/notifications';
 
 // PATCH /api/meetups/:id  → edit or reschedule a meetup
 // DELETE /api/meetups/:id → delete it
-// Only the meetup's host may do either.
+// Only the meetup's host may do either. People who are going get notified
+// when the date changes or the meetup is cancelled.
 export default async function handler(req, res) {
   if (req.method !== 'PATCH' && req.method !== 'DELETE') {
     res.setHeader('Allow', ['PATCH', 'DELETE']);
@@ -25,11 +27,11 @@ export default async function handler(req, res) {
   const { meetupId } = req.query;
 
   try {
-    const owner = await checkMeetupOwner(meetupId, session.user.email);
-    if (owner === 'not-found') {
+    const { status, meetup } = await findMeetupForHost(meetupId, session.user.email);
+    if (status === 'not-found') {
       return res.status(404).json({ message: 'Meetup not found.' });
     }
-    if (owner === 'forbidden') {
+    if (status === 'forbidden') {
       return res.status(403).json({ message: 'Only the host can change this meetup.' });
     }
 
@@ -38,8 +40,18 @@ export default async function handler(req, res) {
       if (error) {
         return res.status(422).json({ message: error });
       }
-      await updateMeetup(meetupId, cleanMeetupInput(req.body));
+      const changes = cleanMeetupInput(req.body);
+      await updateMeetup(meetupId, changes);
+
+      if (changes.date !== meetup.date) {
+        await notifyAttendees({ ...meetup, title: changes.title }, 'rescheduled', {
+          oldDate: meetup.date,
+          newDate: changes.date,
+        });
+      }
     } else {
+      // notify first: once it's deleted we no longer know who was going
+      await notifyAttendees(meetup, 'cancelled');
       await deleteMeetup(meetupId);
     }
   } catch (err) {

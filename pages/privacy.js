@@ -38,14 +38,14 @@ export default function PrivacyPage() {
       <p>
         Data is stored in a MongoDB Atlas database, and the site is hosted on Vercel. Photos you
         upload for a meetup are stored with Vercel Blob and are publicly visible, like the rest
-        of the meetup. We don’t sell or share your information with anyone else.
+        of the meetup. To show meetups on a map, addresses are looked up with OpenStreetMap services (Photon and Nominatim), and map tiles come from CARTO. We don’t sell or share your information with anyone else.
       </p>
 
       <h2>Deleting your data</h2>
       <p>
         You can delete any meetup you host. To have everything about you removed, open an issue on
         the project’s{' '}
-        <a href='https://github.com/FareenaAkram/next-js-project/issues' target='_blank' rel='noopener noreferrer'>
+        <a href='https://github.com/FareenaAkram/gather/issues' target='_blank' rel='noopener noreferrer'>
           GitHub page
         </a>{' '}
         and it will be taken care of.

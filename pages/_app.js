@@ -1,5 +1,6 @@
 import { SessionProvider } from 'next-auth/react'
 import Layout from '../components/layout/Layout'
+import 'leaflet/dist/leaflet.css'
 import '../styles/globals.css'
 
 // SessionProvider shares "who is signed in" with every component via useSession()

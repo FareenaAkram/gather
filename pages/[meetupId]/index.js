@@ -1,5 +1,5 @@
 import MeetupDetails from '../../components/meetups/MeetupDetails';
-import { getMeetupById, getMeetupIds } from '../../lib/meetups';
+import { getMeetupById, getMeetupIds, getMeetupLocation } from '../../lib/meetups';
 
 export default function MeetupDetailsPage(props) {
   return (
@@ -13,6 +13,8 @@ export default function MeetupDetailsPage(props) {
       category={props.meetupData.category}
       capacity={props.meetupData.capacity}
       host={props.meetupData.host}
+      attendees={props.meetupData.attendees}
+      location={props.location}
     />
   );
 }
@@ -34,8 +36,11 @@ export async function getStaticProps(context) {
     return { notFound: true, revalidate: 60 };
   }
 
+  // coordinates for the map; null if the address couldn't be found
+  const location = await getMeetupLocation(context.params.meetupId);
+
   return {
-    props: { meetupData },
+    props: { meetupData, location },
     revalidate: 60,
   };
 }

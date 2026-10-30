@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import HostActions from './HostActions';
+import RsvpBox from './RsvpBox';
+import MeetupMap from './MeetupMap';
 import { getCategory } from '../../lib/categories';
 import { formatLongDate, googleCalendarUrl } from '../../lib/dates';
 import classes from './MeetupDetails.module.css';
@@ -38,7 +40,7 @@ export default function MeetupDetails(props) {
           </div>
         )}
 
-        <HostActions meetupId={props.id} host={props.host} />
+        <HostActions key={props.id} meetupId={props.id} host={props.host} />
 
         <div className={classes.info}>
           <div className={classes.tile}>
@@ -84,6 +86,15 @@ export default function MeetupDetails(props) {
           )}
         </div>
 
+        {/* key: start fresh when moving from one meetup straight to another */}
+        <RsvpBox
+          key={props.id}
+          meetupId={props.id}
+          host={props.host}
+          capacity={props.capacity}
+          attendees={props.attendees}
+        />
+
         {calendarUrl && (
           <a
             className={classes.calendar}
@@ -97,6 +108,8 @@ export default function MeetupDetails(props) {
 
         <h2>About this meetup</h2>
         <p>{props.description}</p>
+
+        <MeetupMap address={props.address} location={props.location} image={props.image} />
       </div>
     </article>
   );

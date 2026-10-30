@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 
 import Card from '../ui/Card';
 import ImagePicker from './ImagePicker';
+import AddressInput from './AddressInput';
 import { CATEGORIES } from '../../lib/categories';
 import classes from './NewMeetupForm.module.css';
 
@@ -15,7 +16,9 @@ function NewMeetupForm(props) {
   const [imageError, setImageError] = useState(null);
   const dateInputRef = useRef();
   const categoryInputRef = useRef();
-  const addressInputRef = useRef();
+  // address + coordinates come from AddressInput as you type or pick a place
+  const [address, setAddress] = useState(meetup.address || '');
+  const [location, setLocation] = useState(props.location || null);
   const capacityInputRef = useRef();
   const descriptionInputRef = useRef();
 
@@ -30,7 +33,6 @@ function NewMeetupForm(props) {
     const enteredTitle = titleInputRef.current.value;
     const enteredDate = dateInputRef.current.value;
     const enteredCategory = categoryInputRef.current.value;
-    const enteredAddress = addressInputRef.current.value;
     const enteredCapacity = capacityInputRef.current.value;
     const enteredDescription = descriptionInputRef.current.value;
 
@@ -39,7 +41,8 @@ function NewMeetupForm(props) {
       image: image,
       date: enteredDate,
       category: enteredCategory,
-      address: enteredAddress,
+      address: address,
+      location: location,
       capacity: enteredCapacity ? Number(enteredCapacity) : null,
       description: enteredDescription,
     };
@@ -104,33 +107,33 @@ function NewMeetupForm(props) {
             </p>
           )}
         </div>
-        <div className={classes.row}>
-          <div className={classes.control}>
-            <label htmlFor='address'>Address</label>
-            <input
-              type='text'
-              required
-              id='address'
-              defaultValue={meetup.address}
-              ref={addressInputRef}
-              placeholder='Street, City'
-            />
-          </div>
-          <div className={classes.control}>
-            <label htmlFor='capacity'>
-              Capacity <span className={classes.optional}>optional</span>
-            </label>
-            <input
-              type='number'
-              min='1'
-              max='10000'
-              step='1'
-              id='capacity'
-              defaultValue={meetup.capacity || ''}
-              ref={capacityInputRef}
-              placeholder='e.g. 30'
-            />
-          </div>
+        <div className={classes.control}>
+          <label htmlFor='address'>Address</label>
+          <AddressInput
+            id='address'
+            defaultValue={meetup.address}
+            defaultLocation={props.location}
+            image={image}
+            onChange={(newAddress, newLocation) => {
+              setAddress(newAddress);
+              setLocation(newLocation);
+            }}
+          />
+        </div>
+        <div className={`${classes.control} ${classes.narrow}`}>
+          <label htmlFor='capacity'>
+            Capacity <span className={classes.optional}>optional</span>
+          </label>
+          <input
+            type='number'
+            min='1'
+            max='10000'
+            step='1'
+            id='capacity'
+            defaultValue={meetup.capacity || ''}
+            ref={capacityInputRef}
+            placeholder='e.g. 30'
+          />
         </div>
         <div className={classes.control}>
           <label htmlFor='description'>Description</label>

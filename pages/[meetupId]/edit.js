@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { getServerSession } from "next-auth/next";
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 import { authOptions } from "../api/auth/[...nextauth]";
-import { getMeetupById } from "../../lib/meetups";
+import { getMeetupById, getMeetupLocation } from "../../lib/meetups";
 import { userIdFromEmail } from "../../lib/users";
 import classes from "../../styles/NewMeetup.module.css";
 
@@ -43,9 +43,19 @@ export default function EditMeetup(props) {
                 <span className={classes.eyebrow}>Edit meetup</span>
                 <h1>Change of plans?</h1>
                 <p>Update the details or move <strong>{props.meetup.title}</strong> to a new date.</p>
+                {props.meetup.attendees.length > 0 && (
+                    <ul className={classes.tips}>
+                        <li>
+                            {props.meetup.attendees.length}{' '}
+                            {props.meetup.attendees.length === 1 ? 'person is' : 'people are'} going.
+                            They’ll get a notification if you change the date.
+                        </li>
+                    </ul>
+                )}
             </div>
             <NewMeetupForm
                 meetup={props.meetup}
+                location={props.location}
                 onAddMeetup={updateMeetupHandler}
                 isSubmitting={isSubmitting}
                 error={error}
@@ -76,5 +86,7 @@ export async function getServerSideProps(context) {
         return { redirect: { destination: `/${meetupId}`, permanent: false } };
     }
 
-    return { props: { meetup } };
+    const location = await getMeetupLocation(meetupId);
+
+    return { props: { meetup, location } };
 }
