@@ -21,8 +21,6 @@ const client = new MongoClient(`mongodb+srv://fareenaakram18_db_user:${password}
       console.dir(err);
     }
 
-    router.push('/');
-
   }
    else if (req.method === 'GET') {
   

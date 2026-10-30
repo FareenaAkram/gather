@@ -1,12 +1,14 @@
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 import { useRouter } from "next/router";
+import classes from "../../styles/NewMeetup.module.css";
 export default function NewMeetup(onAddMeetup) {
 
     const router = useRouter();
 
-    function addMeetupHandler(enteredMeetupData) {
-        fetch('/api/new-meetup', {
-            method: 'POST', 
+    async function addMeetupHandler(enteredMeetupData) {
+        // wait for the save to finish so the new meetup shows up on the home page
+        await fetch('/api/new-meetup', {
+            method: 'POST',
             body: JSON.stringify(enteredMeetupData),
             headers: {
                 'Content-Type': 'application/json'
@@ -14,7 +16,19 @@ export default function NewMeetup(onAddMeetup) {
         });
         router.push('/');
     }
-    return (    
-        <NewMeetupForm  onAddMeetup={addMeetupHandler} />
+    return (
+        <section className={classes.page}>
+            <div className={classes.intro}>
+                <span className={classes.eyebrow}>Host a meetup</span>
+                <h1>Bring your people together.</h1>
+                <p>Share a few details and your meetup goes live for everyone to discover.</p>
+                <ul className={classes.tips}>
+                    <li>Pick a clear, specific title</li>
+                    <li>Use a bright, landscape photo</li>
+                    <li>Tell people what to expect</li>
+                </ul>
+            </div>
+            <NewMeetupForm  onAddMeetup={addMeetupHandler} />
+        </section>
     )
 }

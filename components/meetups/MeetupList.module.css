@@ -2,4 +2,30 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.5rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+.empty h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty p {
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.empty a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
 }

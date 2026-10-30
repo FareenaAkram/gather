@@ -1,45 +1,72 @@
 .form {
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .control {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .control label {
   display: block;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.4rem;
 }
 
 .control input,
 .control textarea {
   display: block;
-  font: inherit;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  padding: 0.25rem;
   width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: #fcfbf8;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.control textarea {
+  resize: vertical;
+}
+
+.control input::placeholder,
+.control textarea::placeholder {
+  color: #a9a2ac;
+}
+
+.control input:focus,
+.control textarea:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 .actions {
-  margin-top: 1rem;
-  text-align: right;
+  margin-top: 1.75rem;
 }
 
 .actions button {
+  width: 100%;
   font: inherit;
+  font-weight: 600;
   cursor: pointer;
-  background-color: #77002e;
+  background-color: var(--accent);
   color: white;
-  padding: 0.5rem 1.5rem;
-  border: 1px solid #77002e;
-  border-radius: 4px;
-  font-weight: bold;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.actions button:hover,
-.actions button:active {
-  background-color: #a50e48;
-  border-color: #a50e48;
+.actions button:hover {
+  background-color: var(--accent-dark);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 1.25rem;
+  }
 }
