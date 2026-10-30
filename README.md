@@ -2,7 +2,7 @@
 
 A small meetup app built with Next.js and MongoDB. You can browse upcoming meetups, filter them by category, open one to see the details and add it to your calendar, or host your own.
 
-**Live:** https://gather-minklzmyo-fareenaakrams-projects.vercel.app/
+**Live:** https://gather-omega-fawn.vercel.app/
 
 ![Home page](docs/screenshot.png)
 
