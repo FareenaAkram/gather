@@ -33,7 +33,7 @@ When I finished the course I kept going with it. Partly because I wanted somethi
 - MongoDB Atlas with the official Node driver
 - NextAuth (GitHub and Google sign-in)
 - Vercel Blob for image uploads
-- Leaflet with CARTO map tiles, Photon and Nominatim (OpenStreetMap) for address search
+- Leaflet with Esri's Light Gray Canvas tiles, Photon and Nominatim (OpenStreetMap) for address search
 - CSS Modules
 - Hosted on Vercel
 

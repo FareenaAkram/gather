@@ -26,11 +26,17 @@ function StyledMap(props) {
         scrollWheelZoom: false, // don't hijack the page scroll
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19,
+      // Esri's "Light Gray Canvas": a quiet, minimal base map that needs no API key.
+      // The base and the street names are separate layers, so we can tint the base
+      // warm (see .tiles in the CSS) while the labels stay crisp on top.
+      const esri = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas';
+      L.tileLayer(`${esri}/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`, {
+        attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
+        className: classes.tiles,
+        maxZoom: 16,
+      }).addTo(map);
+      L.tileLayer(`${esri}/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, {
+        maxZoom: 16,
       }).addTo(map);
 
       L.control.zoom({ position: 'topright' }).addTo(map);

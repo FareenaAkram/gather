@@ -38,7 +38,7 @@ export default function PrivacyPage() {
       <p>
         Data is stored in a MongoDB Atlas database, and the site is hosted on Vercel. Photos you
         upload for a meetup are stored with Vercel Blob and are publicly visible, like the rest
-        of the meetup. To show meetups on a map, addresses are looked up with OpenStreetMap services (Photon and Nominatim), and map tiles come from CARTO. We don’t sell or share your information with anyone else.
+        of the meetup. To show meetups on a map, addresses are looked up with OpenStreetMap services (Photon and Nominatim), and map tiles come from Esri. We don’t sell or share your information with anyone else.
       </p>
 
       <h2>Deleting your data</h2>
