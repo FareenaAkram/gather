@@ -50,7 +50,10 @@
   box-shadow: 0 8px 20px rgba(22, 19, 26, 0.25);
 }
 
-.photo img {
+/* Leaflet's own CSS gives images inside markers `width: auto`. Three classes here
+   outrank its rule, so the photo fills the whole blob. */
+.marker .pin .photo img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { formatShortDate } from '../../lib/dates';
+import useDismiss from '../ui/useDismiss';
 import classes from './NotificationBell.module.css';
 
 function timeAgo(isoString) {
@@ -41,41 +42,25 @@ function NotificationBell() {
     return () => Router.events.off('routeChangeComplete', loadNotifications);
   }, []);
 
-  // close the dropdown when clicking anywhere else or pressing Escape
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
+  // useCallback keeps this the same function between renders, so useDismiss
+  // doesn't re-attach its listeners every time the bell re-renders
+  const close = useCallback(() => {
+    setIsOpen(false);
+    // they've seen them now; drop the "unread" styling once the list is closed
+    setNotifications((current) => current.map((n) => ({ ...n, read: true })));
+  }, []);
 
-    function clickHandler(event) {
-      if (!wrapperRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    }
-    function keyHandler(event) {
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', clickHandler);
-    document.addEventListener('keydown', keyHandler);
-    return () => {
-      document.removeEventListener('mousedown', clickHandler);
-      document.removeEventListener('keydown', keyHandler);
-    };
-  }, [isOpen]);
+  // close when tapping anywhere else or pressing Escape
+  useDismiss(wrapperRef, isOpen, close);
 
   function toggleHandler() {
-    const opening = !isOpen;
-    setIsOpen(opening);
-
-    if (opening && unreadCount > 0) {
-      fetch('/api/notifications', { method: 'PATCH' });
+    if (isOpen) {
+      close();
+      return;
     }
-    if (!opening) {
-      // they've seen them now; drop the "unread" styling once the list is closed
-      setNotifications((current) => current.map((n) => ({ ...n, read: true })));
+    setIsOpen(true);
+    if (unreadCount > 0) {
+      fetch('/api/notifications', { method: 'PATCH' });
     }
   }
 

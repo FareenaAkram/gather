@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Avatar from '../ui/Avatar';
 import HostActions from './HostActions';
 import RsvpBox from './RsvpBox';
 import MeetupMap from './MeetupMap';
@@ -29,11 +30,7 @@ export default function MeetupDetails(props) {
 
         {props.host && (
           <div className={classes.host}>
-            {props.host.image ? (
-              <img src={props.host.image} alt='' />
-            ) : (
-              <span>{props.host.name[0].toUpperCase()}</span>
-            )}
+            <Avatar image={props.host.image} name={props.host.name} />
             <p>
               Hosted by <strong>{props.host.name}</strong>
             </p>
@@ -79,7 +76,9 @@ export default function MeetupDetails(props) {
                 </svg>
               </div>
               <div>
-                <strong>Up to {props.capacity} people</strong>
+                <strong>
+                  Up to {props.capacity} {props.capacity === 1 ? 'person' : 'people'}
+                </strong>
                 <span>Limited spots</span>
               </div>
             </div>

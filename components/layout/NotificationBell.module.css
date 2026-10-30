@@ -131,6 +131,19 @@ a.item:hover {
   color: var(--muted);
 }
 
+/* On phones the bell isn't at the screen edge, so a panel hanging off the bell
+   would stick out on the left. Pin it to the screen instead, under the nav. */
+@media (max-width: 600px) {
+  .panel {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 4.6rem);
+    left: 0.75rem;
+    right: 0.75rem;
+    width: auto;
+    max-height: 70vh;
+  }
+}
+
 @keyframes drop {
   from {
     opacity: 0;

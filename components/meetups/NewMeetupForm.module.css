@@ -19,6 +19,13 @@
   gap: 0 1rem;
 }
 
+/* grid columns won't shrink below their content's natural width by default, and
+   date pickers are wide on some phones; min-width: 0 lets them shrink */
+.row > *,
+.control input {
+  min-width: 0;
+}
+
 .optional {
   font-weight: 400;
   color: var(--muted);

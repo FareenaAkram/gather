@@ -57,6 +57,17 @@ img {
   max-width: 100%;
 }
 
+/* long words or links (e.g. a pasted URL as an address) wrap instead of
+   pushing the page wider than the screen */
+h1,
+h2,
+h3,
+p,
+address,
+li {
+  overflow-wrap: break-word;
+}
+
 ::selection {
   background: var(--accent);
   color: #fff;

@@ -138,6 +138,7 @@ function ImagePicker(props) {
           type='file'
           accept={ALLOWED_TYPES.join(',')}
           onChange={fileChangeHandler}
+          className={classes.file}
           hidden
         />
       </div>

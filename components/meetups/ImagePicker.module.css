@@ -151,3 +151,9 @@
   border-color: var(--accent);
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
+
+/* The form styles every input with `display: block`, which beats the `hidden`
+   attribute. Two classes here make this rule stronger than that one. */
+.dropzone .file {
+  display: none;
+}

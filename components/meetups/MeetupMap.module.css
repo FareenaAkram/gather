@@ -11,7 +11,9 @@
   margin-bottom: 0.9rem;
 }
 
-.head h2 {
+/* the details page styles every h2 inside it with a big top margin; not this one */
+.section .head h2 {
+  margin: 0;
   font-size: 1.25rem;
 }
 
@@ -99,14 +101,14 @@
 .chip {
   position: absolute;
   z-index: 500;
-  left: 0.85rem;
-  bottom: 0.85rem;
-  right: 0.85rem;
+  /* top-left: the zoom buttons are top-right and the map credits sit at the bottom */
+  left: 0.75rem;
+  top: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.45rem;
   width: fit-content;
-  max-width: calc(100% - 1.7rem);
+  max-width: calc(100% - 4.5rem);
   padding: 0.5rem 0.9rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.94);

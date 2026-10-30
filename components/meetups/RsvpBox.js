@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import Avatar from '../ui/Avatar';
 import classes from './RsvpBox.module.css';
 
 const MAX_AVATARS = 5;
@@ -97,15 +98,9 @@ function RsvpBox(props) {
       <div className={classes.people}>
         {attendees.length > 0 && (
           <div className={classes.avatars}>
-            {attendees.slice(0, MAX_AVATARS).map((person) =>
-              person.image ? (
-                <img key={person.id} src={person.image} alt='' title={person.name} />
-              ) : (
-                <span key={person.id} title={person.name}>
-                  {person.name[0].toUpperCase()}
-                </span>
-              )
-            )}
+            {attendees.slice(0, MAX_AVATARS).map((person) => (
+              <Avatar key={person.id} image={person.image} name={person.name} title={person.name} />
+            ))}
           </div>
         )}
         <div>
