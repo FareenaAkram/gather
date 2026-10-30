@@ -1,0 +1,140 @@
+/* ---------- top progress bar ---------- */
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #ff8a5c);
+  box-shadow: 0 0 10px rgba(255, 90, 54, 0.5);
+  transform-origin: left;
+  /* creeps towards 90% and waits there until the page is ready */
+  animation: creep 8s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+}
+
+.barDone {
+  animation: finish 0.4s ease forwards;
+}
+
+@keyframes creep {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(0.9);
+  }
+}
+
+@keyframes finish {
+  0% {
+    transform: scaleX(0.9);
+    opacity: 1;
+  }
+  60% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+/* ---------- overlay (sits under the sticky nav) ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.25rem;
+  background: rgba(250, 247, 242, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fadeIn 0.25s ease;
+}
+
+.overlay p {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.shapes {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  height: 3.5rem;
+}
+
+.circle,
+.square,
+.pill {
+  display: block;
+  animation: hop 1s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.circle {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.square {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.45rem;
+  background: #8b7cf6;
+  animation-name: hopSpin;
+  animation-delay: 0.15s;
+}
+
+.pill {
+  width: 2.1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: #34b98a;
+  animation-delay: 0.3s;
+}
+
+@keyframes hop {
+  0%,
+  55%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  10% {
+    transform: translateY(0) scale(1.15, 0.85);
+  }
+  30% {
+    transform: translateY(-1.4rem) scale(0.95, 1.05);
+  }
+  50% {
+    transform: translateY(0) scale(1.1, 0.9);
+  }
+}
+
+@keyframes hopSpin {
+  0%,
+  55%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-1.4rem) rotate(45deg);
+  }
+  50% {
+    transform: translateY(0) rotate(90deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
