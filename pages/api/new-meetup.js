@@ -1,46 +1,38 @@
+import { createMeetup, getAllMeetups, validateMeetup } from '../../lib/meetups';
 
-import { MongoClient } from "mongodb";
 export default async function handler(req, res) {
-  const password = process.env.DB_PASSWORD;
-const client = new MongoClient(`mongodb+srv://fareenaakram18_db_user:${password}@cluster0.nmegg5c.mongodb.net/?compressors=zlib`);
   if (req.method === 'POST') {
-    const data = req.body;
-    
-    try {
-      await client.connect();
-      console.log("You successfully connected to MongoDB!");
-      const db = client.db();
-      const meetupsCollection = db.collection('meetups');
-      const result = await meetupsCollection.insertOne(data);
-      console.log(result);
-      await client.close();
-      res.status(201).json({ message: 'Meetup created!' });
-
-    } catch (err) {
-
-      console.dir(err);
+    const error = validateMeetup(req.body);
+    if (error) {
+      return res.status(422).json({ message: error });
     }
 
-  }
-   else if (req.method === 'GET') {
-  
+    const { title, image, address, description } = req.body;
 
     try {
-      await client.connect();
-      console.log("You successfully connected to MongoDB!");
-      const db = client.db();
-      const meetupsCollection = db.collection('meetups');
-      const result = await meetupsCollection.find().toArray();
-      console.log(result);
-      await client.close();
-      res.status(200).json({ meetups: result });
-
+      const id = await createMeetup({
+        title: title.trim(),
+        image: image.trim(),
+        address: address.trim(),
+        description: description.trim(),
+      });
+      return res.status(201).json({ message: 'Meetup created!', id });
     } catch (err) {
-
-      console.dir(err);
+      console.error(err);
+      return res.status(500).json({ message: 'Could not save the meetup.' });
     }
-    
-  
-
   }
+
+  if (req.method === 'GET') {
+    try {
+      const meetups = await getAllMeetups();
+      return res.status(200).json({ meetups });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Could not load meetups.' });
+    }
+  }
+
+  res.setHeader('Allow', ['GET', 'POST']);
+  return res.status(405).json({ message: `Method ${req.method} not allowed.` });
 }

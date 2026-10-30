@@ -1,20 +1,36 @@
+import { useState } from "react";
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 import { useRouter } from "next/router";
 import classes from "../../styles/NewMeetup.module.css";
-export default function NewMeetup(onAddMeetup) {
+export default function NewMeetup() {
 
     const router = useRouter();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
 
     async function addMeetupHandler(enteredMeetupData) {
-        // wait for the save to finish so the new meetup shows up on the home page
-        await fetch('/api/new-meetup', {
-            method: 'POST',
-            body: JSON.stringify(enteredMeetupData),
-            headers: {
-                'Content-Type': 'application/json'
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+            const response = await fetch('/api/new-meetup', {
+                method: 'POST',
+                body: JSON.stringify(enteredMeetupData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Something went wrong.');
             }
-        });
-        router.push('/');
+
+            router.push('/');
+        } catch (err) {
+            setError(err.message);
+            setIsSubmitting(false);
+        }
     }
     return (
         <section className={classes.page}>
@@ -28,7 +44,11 @@ export default function NewMeetup(onAddMeetup) {
                     <li>Tell people what to expect</li>
                 </ul>
             </div>
-            <NewMeetupForm  onAddMeetup={addMeetupHandler} />
+            <NewMeetupForm
+                onAddMeetup={addMeetupHandler}
+                isSubmitting={isSubmitting}
+                error={error}
+            />
         </section>
     )
 }

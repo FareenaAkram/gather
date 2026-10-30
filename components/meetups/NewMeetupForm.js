@@ -70,8 +70,15 @@ function NewMeetupForm(props) {
             ref={descriptionInputRef}
           ></textarea>
         </div>
+        {props.error && (
+          <p className={classes.error} role='alert'>
+            {props.error}
+          </p>
+        )}
         <div className={classes.actions}>
-          <button >Add Meetup</button>
+          <button disabled={props.isSubmitting}>
+            {props.isSubmitting ? 'Publishing…' : 'Add Meetup'}
+          </button>
         </div>
       </form>
     </Card>

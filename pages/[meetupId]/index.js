@@ -1,51 +1,37 @@
 import MeetupDetails from '../../components/meetups/MeetupDetails';
+import { getMeetupById, getMeetupIds } from '../../lib/meetups';
+
 export default function MeetupDetailsPage(props) {
-    // const router = useRouter();
-    return (
-       <MeetupDetails 
-        id={props.meetupData._id}
-        image={props.meetupData.image}
-        title={props.meetupData.title}
-        address={props.meetupData.address}
-        description={props.meetupData.description}
-        > </MeetupDetails>
-    )
+  return (
+    <MeetupDetails
+      id={props.meetupData._id}
+      image={props.meetupData.image}
+      title={props.meetupData.title}
+      address={props.meetupData.address}
+      description={props.meetupData.description}
+    />
+  );
 }
 
 export async function getStaticPaths() {
-  const response = await fetch('http://localhost:3000/api/new-meetup');
-
-  const data = await response.json();
-
-  const paths = data.meetups.map((meetup) => {
-
-    return {
-      params: {
-        meetupId: meetup._id.toString(),
-      },
-    };
-  });
+  const ids = await getMeetupIds();
 
   return {
-    fallback: false,
-    paths,
+    // meetups added after the build are generated on their first visit
+    fallback: 'blocking',
+    paths: ids.map((id) => ({ params: { meetupId: id } })),
   };
 }
 
-
 export async function getStaticProps(context) {
-  const meetupId = context.params.meetupId;
+  const meetupData = await getMeetupById(context.params.meetupId);
 
-  const response = await fetch('http://localhost:3000/api/new-meetup');
-  const data = await response.json();
-
-  const meetupData = data.meetups.find(
-    (meetup) => meetup._id.toString() === meetupId
-  );
+  if (!meetupData) {
+    return { notFound: true, revalidate: 60 };
+  }
 
   return {
-    props: {
-      meetupData: meetupData || null,
-    },
+    props: { meetupData },
+    revalidate: 60,
   };
 }
