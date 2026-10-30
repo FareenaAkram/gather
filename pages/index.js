@@ -2,11 +2,16 @@ import { Fragment } from "react";
 import Link from "next/link";
 import MeetupList from "../components/meetups/MeetupList";
 import classes from "../styles/Home.module.css";
-import { getAllMeetups } from "../lib/meetups";
+import { getUpcomingMeetups } from "../lib/meetups";
+import { CATEGORIES, getCategory } from "../lib/categories";
 
 export default function Home(props) {
   const meetups = props.meetups || [];
   const featured = meetups[0];
+  const activeCategory = getCategory(props.activeCategory);
+  const visibleMeetups = activeCategory
+    ? meetups.filter((meetup) => meetup.category === activeCategory.id)
+    : meetups;
 
   return (
     <Fragment>
@@ -38,7 +43,7 @@ export default function Home(props) {
           </div>
           <div className={classes.chip}>
             <span className={classes.dot} />
-            {meetups.length} {meetups.length === 1 ? 'meetup' : 'meetups'} happening
+            {meetups.length} {meetups.length === 1 ? 'meetup' : 'meetups'} coming up
           </div>
         </div>
       </section>
@@ -46,18 +51,53 @@ export default function Home(props) {
       <section id='meetups' className={classes.section}>
         <div className={classes.sectionHead}>
           <h2>Upcoming meetups</h2>
-          <span className={classes.count}>{meetups.length} total</span>
+          <span className={classes.count}>
+            {visibleMeetups.length} {activeCategory ? `in ${activeCategory.label}` : 'upcoming'}
+          </span>
         </div>
-        <MeetupList meetups={meetups}></MeetupList>
+
+        <nav className={classes.filters} aria-label='Filter by category'>
+          <Link href='/#meetups' scroll={false}>
+            <a className={`${classes.filter} ${!activeCategory ? classes.filterActive : ''}`}>
+              All
+            </a>
+          </Link>
+          {CATEGORIES.map((category) => (
+            <Link
+              key={category.id}
+              href={`/?category=${category.id}#meetups`}
+              scroll={false}
+            >
+              <a
+                className={`${classes.filter} ${
+                  activeCategory && activeCategory.id === category.id ? classes.filterActive : ''
+                }`}
+                style={{ '--dot': category.color }}
+              >
+                {category.label}
+              </a>
+            </Link>
+          ))}
+        </nav>
+
+        <MeetupList
+          meetups={visibleMeetups}
+          emptyTitle={activeCategory ? `No ${activeCategory.label} meetups yet` : undefined}
+        />
       </section>
     </Fragment>
   )
 }
-export async function getServerSideProps() {
+
+export async function getServerSideProps(context) {
   // query the database directly instead of calling our own API route over HTTP
-  const meetups = await getAllMeetups();
+  const meetups = await getUpcomingMeetups();
+  const category = getCategory(context.query.category);
 
   return {
-    props: { meetups },
+    props: {
+      meetups,
+      activeCategory: category ? category.id : null,
+    },
   };
 }

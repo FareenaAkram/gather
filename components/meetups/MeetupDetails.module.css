@@ -35,32 +35,101 @@
   padding: 2rem 0.25rem 0;
 }
 
+.category {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.9rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.category::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--dot);
+}
+
 .body h1 {
   font-size: clamp(2rem, 5vw, 3.25rem);
   font-weight: 800;
   letter-spacing: -0.035em;
-  margin-bottom: 1rem;
+  margin-bottom: 1.75rem;
 }
 
-.body address {
-  display: inline-flex;
-  gap: 0.5rem;
-  align-items: center;
+.info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+
+.tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.tile strong,
+.tile address {
+  display: block;
   font-style: normal;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.tile span {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
   background: var(--accent-soft);
   color: var(--accent-dark);
 }
 
-.body svg {
-  flex-shrink: 0;
-  width: 1.1rem;
-  height: 1.1rem;
+.icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.calendar {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.calendar:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
 }
 
 .body h2 {

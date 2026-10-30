@@ -7,7 +7,7 @@ export default async function handler(req, res) {
       return res.status(422).json({ message: error });
     }
 
-    const { title, image, address, description } = req.body;
+    const { title, image, address, description, date, category, capacity } = req.body;
 
     try {
       const id = await createMeetup({
@@ -15,6 +15,9 @@ export default async function handler(req, res) {
         image: image.trim(),
         address: address.trim(),
         description: description.trim(),
+        date,
+        category,
+        capacity: capacity ? Number(capacity) : null,
       });
       return res.status(201).json({ message: 'Meetup created!', id });
     } catch (err) {

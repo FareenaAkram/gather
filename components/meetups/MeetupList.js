@@ -6,7 +6,7 @@ function MeetupList(props) {
   if (!props.meetups || props.meetups.length === 0) {
     return (
       <div className={classes.empty}>
-        <h3>No meetups yet</h3>
+        <h3>{props.emptyTitle || 'No meetups yet'}</h3>
         <p>Be the first to bring people together.</p>
         <Link href='/new-meetup'>
           <a>Host a meetup →</a>
@@ -24,6 +24,8 @@ function MeetupList(props) {
           image={meetup.image}
           title={meetup.title}
           address={meetup.address}
+          date={meetup.date}
+          category={meetup.category}
         />
       ))}
     </ul>

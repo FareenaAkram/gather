@@ -9,6 +9,9 @@ export default function MeetupDetailsPage(props) {
       title={props.meetupData.title}
       address={props.meetupData.address}
       description={props.meetupData.description}
+      date={props.meetupData.date}
+      category={props.meetupData.category}
+      capacity={props.meetupData.capacity}
     />
   );
 }

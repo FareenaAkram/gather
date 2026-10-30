@@ -13,7 +13,20 @@
   margin-bottom: 0.4rem;
 }
 
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 0.25rem;
+}
+
 .control input,
+.control select,
 .control textarea {
   display: block;
   width: 100%;
@@ -30,12 +43,32 @@
   resize: vertical;
 }
 
+.control select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6570' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 1rem;
+}
+
+.control select:invalid {
+  color: #a9a2ac;
+}
+
+.control input[type='datetime-local'] {
+  min-height: 3.1rem;
+}
+
 .control input::placeholder,
 .control textarea::placeholder {
   color: #a9a2ac;
 }
 
 .control input:focus,
+.control select:focus,
 .control textarea:focus {
   outline: none;
   background: #fff;
@@ -84,5 +117,9 @@
 @media (max-width: 480px) {
   .form {
     padding: 1.25rem;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,10 +1,14 @@
 import { useRouter } from 'next/router';
 import Card from '../ui/Card';
+import { getCategory } from '../../lib/categories';
+import { formatShortDate, getBadgeParts } from '../../lib/dates';
 import classes from './MeetupItem.module.css';
 
 function MeetupItem(props) {
 
   const router = useRouter();
+  const category = getCategory(props.category);
+  const badge = getBadgeParts(props.date);
 
   function showDetailsHandler() {
     // navigate to /meetupId
@@ -15,8 +19,20 @@ function MeetupItem(props) {
       <Card className={classes.card}>
         <div className={classes.image}>
           <img src={props.image} alt={props.title} />
+          {badge && (
+            <div className={classes.badge}>
+              <span>{badge.month}</span>
+              <strong>{badge.day}</strong>
+            </div>
+          )}
+          {category && (
+            <span className={classes.category} style={{ '--dot': category.color }}>
+              {category.label}
+            </span>
+          )}
         </div>
         <div className={classes.content}>
+          <p className={classes.when}>{formatShortDate(props.date) || 'Date TBA'}</p>
           <h3>{props.title}</h3>
           <address>
             <svg viewBox='0 0 24 24' aria-hidden='true'>
