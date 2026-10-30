@@ -42,8 +42,10 @@
 
 .frame {
   position: relative;
-  aspect-ratio: 16 / 8;
-  min-height: 15rem;
+  /* Height that grows with the screen, between 15rem and 24rem. (aspect-ratio plus
+     min-height made the box wider than a phone screen: to keep its shape at the
+     minimum height, the browser stretched the width too.) */
+  height: clamp(15rem, 45vw, 24rem);
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: calc(var(--radius) + 2px);
