@@ -43,7 +43,7 @@ Meetup times are stored as the local time at the venue, e.g. `2026-11-14T18:30`,
 
 ## Running it locally
 
-You'll need Node 18+ and a MongoDB Atlas cluster.
+You'll need Node 22 and a MongoDB Atlas cluster. Next 12 doesn't build on Node 24+ (it bundles a library that uses `SlowBuffer`, which newer Node removed), so the version is pinned in `package.json`.
 
 ```bash
 git clone https://github.com/FareenaAkram/next-js-project.git
