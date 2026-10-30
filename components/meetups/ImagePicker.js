@@ -32,18 +32,33 @@ function ImagePicker(props) {
     setProgress(0);
     props.onUploadingChange(true);
 
+    // The Blob library quietly retries failed uploads up to 10 times, which can look
+    // like the upload is frozen. Give up after a minute and show an error instead.
+    const controller = new AbortController();
+    let timedOut = false;
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 60 * 1000);
+
     try {
       const blob = await upload(`meetups/${file.name}`, file, {
         access: 'public',
         handleUploadUrl: '/api/upload',
+        abortSignal: controller.signal,
         onUploadProgress: (event) => setProgress(Math.round(event.percentage)),
       });
       setPreview(blob.url);
       props.onChange(blob.url);
     } catch (err) {
-      setError(err.message || 'Upload failed. Please try again.');
+      setError(
+        timedOut
+          ? 'The upload didn’t go through. Please try again, or paste an image link instead.'
+          : err.message || 'Upload failed. Please try again.'
+      );
       setPreview(props.value || null);
     } finally {
+      clearTimeout(timeout);
       setProgress(null);
       props.onUploadingChange(false);
     }
